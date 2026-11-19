@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bilibili Preference · 控制台</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="dashboard-page">
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="brand sidebar-brand"><img src="../assets/icon32.png" width="30" height="30" alt=""><span>Bilibili Preference</span></div>
+      <nav aria-label="控制台导航">
+        <button type="button" data-view="overview" class="nav-link active">概览</button>
+        <button type="button" data-view="discover" class="nav-link">内容探索</button>
+        <button type="button" data-view="rules" class="nav-link">偏好与过滤</button>
+        <button type="button" data-view="history" class="nav-link">历史与数据</button>
+      </nav>
+      <div class="sidebar-bottom">只在你的浏览器中保存观看记录和设置。<div class="mono">v3.0.0</div></div>
+    </aside>
+    <main class="main-panel">
+      <header class="main-header">
+        <div>
+          <h1 id="page-title">概览</h1>
+          <p id="page-subtitle">了解最近的观看兴趣和当前推荐配置。</p>
+        </div>
+        <div class="header-state" id="header-state">正在读取…</div>
+      </header>
+      <div class="global-status" id="global-status" role="status" aria-live="polite"></div>
+
+      <section id="view-overview" class="view active">
+        <div class="stat-grid">
+          <div class="stat-card"><span>观看视频（30 天）</span><strong id="overview-videos">0</strong></div>
+          <div class="stat-card"><span>有效观看时长</span><strong><span id="overview-minutes">0</span> <small>分钟</small></strong></div>
+          <div class="stat-card"><span>观看会话</span><strong id="overview-sessions">0</strong></div>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="panel-header"><h2>近期兴趣分布</h2><span class="muted">按实际观看时间</span></div>
+            <div id="topic-bars" class="topic-bars"></div>
+            <p class="muted small">兴趣分析基于标题关键词推断，仅供参考，不代表 B 站官方分类。</p>
+          </section>
+          <section class="panel">
+            <div class="panel-header"><h2>最近观看</h2><span class="muted">仅保存在本地</span></div>
+            <div id="recent-watches" class="recent-list"></div>
+          </section>
+        </div>
+        <section class="panel">
+          <div class="panel-header"><h2>当前推荐模式</h2></div>
+          <div class="mode-cards">
+            <button type="button" data-mode="balanced" class="mode-card"><strong>均衡</strong><small>相关性与新颖性兼顾</small></button>
+            <button type="button" data-mode="focus" class="mode-card"><strong>聚焦</strong><small>减少与高权重主题无关的内容</small></button>
+            <button type="button" data-mode="explore" class="mode-card"><strong>探索</strong><small>拓展尚未深入接触的主题</small></button>
+          </div>
+          <p class="muted small">模式影响插件的本地展示策略，不会修改 B 站账号的推荐算法。</p>
+        </section>
+      </section>
+
+      <section id="view-discover" class="view">
+        <section class="panel">
+          <div class="panel-header wrap-header">
+            <div><h2>探索推荐</h2><p class="muted">从公开热门和排行榜获取候选视频，再按本地偏好与多样性排序。</p></div>
+            <button id="fetch-feed" class="button primary" type="button">获取视频</button>
+          </div>
+          <div class="explore-toolbar">
+            <label>排序模式
+              <select id="discover-mode">
+                <option value="balanced">均衡</option>
+                <option value="focus">聚焦</option>
+                <option value="explore">探索</option>
+              </select>
+            </label>
+            <label>标题筛选<input id="discover-search" type="search" placeholder="在候选视频中搜索" autocomplete="off"></label>
+            <span class="muted" id="feed-count">尚未获取候选视频</span>
+          </div>
+          <div id="feed-message" class="muted small">点击“获取视频”开始。接口暂不可用时，可通过下方链接打开 B 站原页面。</div>
+          <div id="feed-videos" class="video-grid"></div>
+          <div class="external-links">
+            <a target="_blank" rel="noopener noreferrer" href="https://www.bilibili.com/v/popular/all">B 站热门</a>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.bilibili.com/v/popular/rank/all">排行榜</a>
+            <a target="_blank" rel="noopener noreferrer" href="https://search.bilibili.com/">主题搜索</a>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-header"><h2>稍后看（本地）</h2><span class="muted" id="saved-count"></span></div>
+          <div id="saved-videos" class="saved-list"></div>
+        </section>
+      </section>
+
+      <section id="view-rules" class="view">
+        <section class="panel">
+          <div class="panel-header"><h2>主题权重</h2><span class="muted">0–5，数值越高越偏好</span></div>
+          <p class="muted">在“聚焦”模式下，权重为 4 或 5 的主题会被优先保留。无法识别主题的视频不会直接被过滤。</p>
+          <div class="weight-grid" id="weights"></div>
+          <div class="right-actions"><button class="button primary" id="save-weights" type="button">保存权重</button></div>
+        </section>
+        <section class="panel">
+          <div class="panel-header"><h2>内容过滤</h2></div>
+          <p class="muted">每行填写一项，也可以用逗号分隔。所有规则仅作用于本地展示。</p>
+          <div class="form-grid">
+            <label>标题关键词<textarea id="blocked-keywords" rows="5" placeholder="关键词，每行一个"></textarea></label>
+            <label>UP 主名称<textarea id="blocked-ups" rows="5" placeholder="UP 主名称，每行一个"></textarea></label>
+            <label>UP 主 UID<textarea id="blocked-uids" rows="4" placeholder="数字 UID，每行一个"></textarea></label>
+            <label>视频 BVID<textarea id="blocked-videos" rows="4" placeholder="从视频卡片屏蔽的视频会出现在这里"></textarea></label>
+          </div>
+          <div class="setting-line inline-settings">
+            <div><strong>在 B 站视频卡片上显示操作按钮</strong><small>悬停视频卡片时显示屏蔽、屏蔽 UP 和加强偏好</small></div>
+            <label class="switch"><input id="show-actions" type="checkbox"><span></span></label>
+          </div>
+          <div class="setting-line inline-settings">
+            <div><strong>显示被过滤的视频</strong><small>以半透明形式显示，便于核查误过滤</small></div>
+            <label class="switch"><input id="rules-show-filtered" type="checkbox"><span></span></label>
+          </div>
+          <div class="right-actions"><button class="button primary" id="save-rules" type="button">保存过滤规则</button></div>
+        </section>
+      </section>
+
+      <section id="view-history" class="view">
+        <section class="panel">
+          <div class="panel-header"><h2>配置快照</h2></div>
+          <div class="snapshot-form"><input id="snapshot-name" type="text" maxlength="70" placeholder="名称，例如：学习模式" aria-label="配置名称"><button id="create-snapshot" type="button" class="button primary">保存当前配置</button></div>
+          <div id="snapshot-list" class="snapshot-list"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-header"><h2>数据与隐私</h2></div>
+          <div class="setting-line inline-settings">
+            <div><strong>记录有效观看</strong><small>仅记录本机播放的有效观看时长，不收集账号 Cookie，也不上传观看记录</small></div>
+            <label class="switch"><input id="settings-track-watch" type="checkbox"><span></span></label>
+          </div>
+          <div class="setting-line inline-settings">
+            <div><strong>启用页面过滤</strong><small>关闭后 B 站页面恢复原本的展示，不删除规则和观看记录</small></div>
+            <label class="switch"><input id="settings-enabled" type="checkbox"><span></span></label>
+          </div>
+          <div class="data-actions">
+            <button id="export-data" type="button" class="button light">导出备份</button>
+            <label class="button light import-label" for="import-file">导入备份<input id="import-file" type="file" accept=".json,application/json" hidden></label>
+            <button id="clear-events" type="button" class="button light">清空观看记录</button>
+            <button id="reset-all" type="button" class="button danger">重置全部数据</button>
+          </div>
+          <p class="muted small">“内容探索”会向 B 站公开接口请求视频列表；本地画像和过滤规则不会随请求发送。</p>
+        </section>
+      </section>
+    </main>
+  </div>
+  <script src="core.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

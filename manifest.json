@@ -1,42 +1,32 @@
 {
   "manifest_version": 3,
-  "name": "B站兴趣画像与推荐算法控制",
-  "version": "2.0",
-  "description": "收集B站浏览行为，生成兴趣画像，支持历史偏好切换和直接更改推荐算法，破除信息茧房。",
-  "permissions": [
-    "storage", 
-    "tabs", 
-    "scripting",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "https://www.bilibili.com/*",
-    "https://search.bilibili.com/*"
-  ],
+  "name": "Bilibili Preference Plugin",
+  "short_name": "Bili Preference",
+  "version": "3.0.0",
+  "description": "本地管理 B 站推荐：内容过滤、兴趣画像、探索和偏好配置。",
+  "minimum_chrome_version": "121",
+  "permissions": ["storage"],
+  "host_permissions": ["https://api.bilibili.com/*"],
   "background": {
-    "service_worker": "background.js"
-  },
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "B站推荐控制"
+    "service_worker": "src/background.js",
+    "scripts": ["src/core.js", "src/background.js"]
   },
   "content_scripts": [
     {
       "matches": ["https://www.bilibili.com/*"],
-      "js": ["content.js"],
-      "run_at": "document_end"
+      "js": ["src/core.js", "src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_idle"
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["injected.js"],
-      "matches": ["https://www.bilibili.com/*"]
-    }
-  ],
+  "action": {
+    "default_title": "Bilibili Preference",
+    "default_popup": "src/popup.html",
+    "default_icon": {"16": "assets/icon16.png", "32": "assets/icon32.png"}
+  },
+  "options_ui": {"page": "src/dashboard.html", "open_in_tab": true},
+  "icons": {"16": "assets/icon16.png", "48": "assets/icon48.png", "128": "assets/icon128.png"},
   "browser_specific_settings": {
-    "gecko": {
-      "id": "bilibili-preference@example.com",
-      "strict_min_version": "109.0"
-    }
+    "gecko": {"id": "bilibili-preference@extension.local", "strict_min_version": "121.0"}
   }
-} 
+}

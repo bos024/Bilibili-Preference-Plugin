@@ -1,0 +1,32 @@
+.bpp-filtered { display: none !important; }
+.bpp-card { position: relative !important; }
+.bpp-dimmed { opacity: .42 !important; transition: opacity .15s ease; }
+.bpp-dimmed:hover, .bpp-dimmed:focus-within { opacity: 1 !important; }
+.bpp-card-actions {
+  position: absolute; z-index: 2147483000; right: 8px; top: 8px;
+  display: flex; gap: 5px; padding: 5px;
+  border-radius: 9px; background: rgba(20, 26, 38, .92);
+  opacity: 0; visibility: hidden; transition: opacity .13s ease;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+}
+.bpp-card:hover > .bpp-card-actions, .bpp-card:focus-within > .bpp-card-actions { opacity: 1; visibility: visible; }
+.bpp-card-button {
+  background: transparent !important; border: 0 !important; border-radius: 5px !important;
+  color: white !important; font: 12px/1.6 system-ui, sans-serif !important;
+  padding: 3px 6px !important; white-space: nowrap !important;
+  cursor: pointer !important; min-width: 0 !important; min-height: 0 !important;
+}
+.bpp-card-button:hover, .bpp-card-button:focus { background: rgba(255,255,255,.2) !important; }
+.bpp-card-button:disabled { opacity: .45 !important; cursor: default !important; }
+.bpp-filter-reason {
+  position: absolute; z-index: 2147482990; bottom: 8px; right: 8px;
+  font: 12px/1.4 system-ui, sans-serif; padding: 5px 8px; border-radius: 6px;
+  color: white; background: rgba(20, 26, 38, .9); pointer-events: none;
+}
+#bpp-toast {
+  position: fixed; z-index: 2147483647; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
+  font: 14px/1.5 system-ui, sans-serif; background: #17233b; color: white;
+  padding: 10px 16px; border-radius: 8px; box-shadow: 0 5px 24px #0003;
+  opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+}
+#bpp-toast.bpp-toast-visible { opacity: 1; transform: translateX(-50%) translateY(0); }

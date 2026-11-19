@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bilibili Preference</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="popup-page">
+  <main class="popup-shell">
+    <header class="popup-header">
+      <div class="brand"><img src="../assets/icon32.png" width="26" height="26" alt=""><span>Bilibili Preference</span></div>
+      <span class="version">v3.0</span>
+    </header>
+    <section class="popup-block">
+      <div class="setting-line">
+        <div><strong>启用推荐控制</strong><small>关闭后不再干预 B 站页面</small></div>
+        <label class="switch"><input id="enabled" type="checkbox"><span></span></label>
+      </div>
+      <div class="setting-line">
+        <div><strong>记录有效观看</strong><small>仅保存在本机</small></div>
+        <label class="switch"><input id="track-watch" type="checkbox"><span></span></label>
+      </div>
+      <div class="setting-line">
+        <div><strong>显示被过滤的视频</strong><small>便于检查是否误屏蔽</small></div>
+        <label class="switch"><input id="show-filtered" type="checkbox"><span></span></label>
+      </div>
+    </section>
+    <section class="popup-block">
+      <div class="section-label">推荐模式</div>
+      <div class="modes" role="group" aria-label="推荐模式">
+        <button type="button" data-mode="balanced">均衡</button>
+        <button type="button" data-mode="focus">聚焦</button>
+        <button type="button" data-mode="explore">探索</button>
+      </div>
+      <p class="hint" id="mode-hint">均衡模式保留内容多样性。</p>
+    </section>
+    <section class="popup-block">
+      <div class="section-label">最近 30 天</div>
+      <div class="compact-stats">
+        <div><b id="stat-videos">—</b><small>观看视频</small></div>
+        <div><b id="stat-minutes">—</b><small>观看分钟</small></div>
+      </div>
+      <div id="top-topic" class="hint">暂无观看记录</div>
+    </section>
+    <p class="feedback" id="status" role="status" aria-live="polite"></p>
+    <footer class="popup-footer">
+      <button id="save-snapshot" type="button" class="button light">保存当前配置</button>
+      <button id="open-dashboard" type="button" class="button primary">打开控制台</button>
+    </footer>
+  </main>
+  <script src="core.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
